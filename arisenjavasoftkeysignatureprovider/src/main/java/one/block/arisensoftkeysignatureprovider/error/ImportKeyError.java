@@ -1,6 +1,6 @@
-package one.block.eosiosoftkeysignatureprovider.error;
+package one.block.arisensoftkeysignatureprovider.error;
 
-import one.block.eosiojava.error.signatureProvider.SignatureProviderError;
+import one.block.arisenjava.error.signatureProvider.SignatureProviderError;
 import org.jetbrains.annotations.NotNull;
 
 /**

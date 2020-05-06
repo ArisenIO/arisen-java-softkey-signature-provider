@@ -1,20 +1,20 @@
-package one.block.eosiosoftkeysignatureprovider;
+package one.block.arisensoftkeysignatureprovider;
 
 
-import one.block.eosiojava.enums.AlgorithmEmployed;
-import one.block.eosiojava.error.EosioError;
-import one.block.eosiojava.error.signatureProvider.GetAvailableKeysError;
-import one.block.eosiojava.error.signatureProvider.SignTransactionError;
-import one.block.eosiojava.error.utilities.EOSFormatterError;
-import one.block.eosiojava.error.utilities.EosFormatterSignatureIsNotCanonicalError;
-import one.block.eosiojava.error.utilities.PEMProcessorError;
-import one.block.eosiojava.interfaces.ISignatureProvider;
-import one.block.eosiojava.models.signatureProvider.EosioTransactionSignatureRequest;
-import one.block.eosiojava.models.signatureProvider.EosioTransactionSignatureResponse;
-import one.block.eosiojava.utilities.EOSFormatter;
-import one.block.eosiojava.utilities.PEMProcessor;
-import one.block.eosiosoftkeysignatureprovider.error.ImportKeyError;
-import one.block.eosiosoftkeysignatureprovider.error.SoftKeySignatureErrorConstants;
+import one.block.arisenjava.enums.AlgorithmEmployed;
+import one.block.arisenjava.error.ArisenError;
+import one.block.arisenjava.error.signatureProvider.GetAvailableKeysError;
+import one.block.arisenjava.error.signatureProvider.SignTransactionError;
+import one.block.arisenjava.error.utilities.RIXFormatterError;
+import one.block.arisenjava.error.utilities.RIXFormatterSignatureIsNotCanonicalError;
+import one.block.arisenjava.error.utilities.PEMProcessorError;
+import one.block.arisenjava.interfaces.ISignatureProvider;
+import one.block.arisenjava.models.signatureProvider.ArisenTransactionSignatureRequest;
+import one.block.arisenjava.models.signatureProvider.ArisenTransactionSignatureResponse;
+import one.block.arisenjava.utilities.RIXFormatter;
+import one.block.arisenjava.utilities.PEMProcessor;
+import one.block.arisensoftkeysignatureprovider.error.ImportKeyError;
+import one.block.arisensoftkeysignatureprovider.error.SoftKeySignatureErrorConstants;
 import org.bitcoinj.core.Sha256Hash;
 import org.bouncycastle.crypto.params.ECDomainParameters;
 import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Example signature provider implementation for EOSIO-java SDK that signs transactions using
+ * Example signature provider implementation for arisen-java SDK that signs transactions using
  * an in-memory private key generated with the secp256r1, prime256v1, or secp256k1 algorithms.  This
  * implementation is NOT secure and should only be used for educational purposes.  It is NOT
  * advisable to store private keys outside of secure devices like TEE's and SE's.
@@ -63,7 +63,7 @@ public class SoftKeySignatureProviderImpl implements ISignatureProvider {
     private static final int BIG_INTEGER_POSITIVE = 1;
 
     /**
-     * Flag to indicate getAvailableKeys() should return keys generated with the secp256k1 algorithm in the legacy (prefaced with "EOS")
+     * Flag to indicate getAvailableKeys() should return keys generated with the secp256k1 algorithm in the legacy (prefaced with "RIX")
      */
     private static final boolean USING_K1_LEGACY_FORMAT = true;
 
@@ -73,7 +73,7 @@ public class SoftKeySignatureProviderImpl implements ISignatureProvider {
     private static final boolean USING_K1_NON_LEGACY_FORMAT = false;
 
     /**
-     * Flag to indicate whether getAvailableKeys() should return keys generated with the secp256k1 algorithm in the legacy (prefaced with "EOS") or new (prefaced with "PUB_K1_") formats.
+     * Flag to indicate whether getAvailableKeys() should return keys generated with the secp256k1 algorithm in the legacy (prefaced with "RIX") or new (prefaced with "PUB_K1_") formats.
      */
     private static final boolean DEFAULT_WHETHER_USING_K1_LEGACY_FORMAT = USING_K1_NON_LEGACY_FORMAT;
 
@@ -81,7 +81,7 @@ public class SoftKeySignatureProviderImpl implements ISignatureProvider {
      * Import private key into softkey signature provider.  Private key is stored in memory.
      * NOT RECOMMENDED for production use!!!!
      *
-     * @param privateKey - Eos format private key
+     * @param privateKey - RIX format private key
      * @throws ImportKeyError Exception that occurs while trying to import a key
      */
     public void importKey(@NotNull String privateKey) throws ImportKeyError {
@@ -92,9 +92,9 @@ public class SoftKeySignatureProviderImpl implements ISignatureProvider {
         String privateKeyPem;
 
         try {
-            privateKeyPem = EOSFormatter.convertEOSPrivateKeyToPEMFormat(privateKey);
-        } catch (EOSFormatterError eosFormatterError) {
-            throw new ImportKeyError(String.format(SoftKeySignatureErrorConstants.IMPORT_KEY_CONVERT_TO_PEM_ERROR, privateKey), eosFormatterError);
+            privateKeyPem = RIXFormatter.convertRIXPrivateKeyToPEMFormat(privateKey);
+        } catch (RIXFormatterError RIXFormatterError) {
+            throw new ImportKeyError(String.format(SoftKeySignatureErrorConstants.IMPORT_KEY_CONVERT_TO_PEM_ERROR, privateKey), RIXFormatterError);
         }
 
         if (privateKeyPem.isEmpty()) {
@@ -105,23 +105,23 @@ public class SoftKeySignatureProviderImpl implements ISignatureProvider {
     }
 
     @Override
-    public @NotNull EosioTransactionSignatureResponse signTransaction(@NotNull EosioTransactionSignatureRequest eosioTransactionSignatureRequest) throws SignTransactionError {
+    public @NotNull ArisenTransactionSignatureResponse signTransaction(@NotNull ArisenTransactionSignatureRequest arisenTransactionSignatureRequest) throws SignTransactionError {
 
-        if (eosioTransactionSignatureRequest.getSigningPublicKeys().isEmpty()) {
+        if (arisenTransactionSignatureRequest.getSigningPublicKeys().isEmpty()) {
             throw new SignTransactionError(SoftKeySignatureErrorConstants.SIGN_TRANS_EMPTY_KEY_LIST);
 
         }
 
-        if (eosioTransactionSignatureRequest.getChainId().isEmpty()) {
+        if (arisenTransactionSignatureRequest.getChainId().isEmpty()) {
             throw new SignTransactionError(SoftKeySignatureErrorConstants.SIGN_TRANS_EMPTY_CHAIN_ID);
         }
 
-        if (eosioTransactionSignatureRequest.getSerializedTransaction().isEmpty()) {
+        if (arisenTransactionSignatureRequest.getSerializedTransaction().isEmpty()) {
             throw new SignTransactionError(SoftKeySignatureErrorConstants.SIGN_TRANS_EMPTY_TRANSACTION);
         }
 
         // Getting serializedTransaction and preparing signable transaction
-        String serializedTransaction = eosioTransactionSignatureRequest.getSerializedTransaction();
+        String serializedTransaction = arisenTransactionSignatureRequest.getSerializedTransaction();
 
         // This is the un-hashed message which is used to recover public key
         byte[] message;
@@ -130,10 +130,10 @@ public class SoftKeySignatureProviderImpl implements ISignatureProvider {
         byte[] hashedMessage;
 
         try {
-            message = Hex.decode(EOSFormatter.prepareSerializedTransactionForSigning(serializedTransaction, eosioTransactionSignatureRequest.getChainId()).toUpperCase());
+            message = Hex.decode(RIXFormatter.prepareSerializedTransactionForSigning(serializedTransaction, arisenTransactionSignatureRequest.getChainId()).toUpperCase());
             hashedMessage = Sha256Hash.hash(message);
-        } catch (EOSFormatterError eosFormatterError) {
-            throw new SignTransactionError(String.format(SoftKeySignatureErrorConstants.SIGN_TRANS_PREPARE_SIGNABLE_TRANS_ERROR, serializedTransaction), eosFormatterError);
+        } catch (RIXFormatterError rFormatterError) {
+            throw new SignTransactionError(String.format(SoftKeySignatureErrorConstants.SIGN_TRANS_PREPARE_SIGNABLE_TRANS_ERROR, serializedTransaction), RIXFormatterError);
         }
 
         if (this.keys.isEmpty()) {
@@ -143,7 +143,7 @@ public class SoftKeySignatureProviderImpl implements ISignatureProvider {
         List<String> signatures = new ArrayList<>();
 
         // Getting public key and search for the corresponding private key
-        for (String inputPublicKey : eosioTransactionSignatureRequest.getSigningPublicKeys()) {
+        for (String inputPublicKey : arisenTransactionSignatureRequest.getSigningPublicKeys()) {
 
             BigInteger privateKeyBI = BigInteger.ZERO;
             AlgorithmEmployed curve = null;
@@ -156,7 +156,7 @@ public class SoftKeySignatureProviderImpl implements ISignatureProvider {
                     String innerPublicKeyPEM = availableKeyProcessor.extractPEMPublicKeyFromPrivateKey(DEFAULT_WHETHER_USING_K1_LEGACY_FORMAT);
 
                     // Convert input public key to PEM format for comparision
-                    String inputPublicKeyPEM = EOSFormatter.convertEOSPublicKeyToPEMFormat(inputPublicKey);
+                    String inputPublicKeyPEM = RIXFormatter.convertRIXPublicKeyToPEMFormat(inputPublicKey);
 
                     if (innerPublicKeyPEM.equals(inputPublicKeyPEM)) {
                         privateKeyBI = new BigInteger(BIG_INTEGER_POSITIVE, availableKeyProcessor.getKeyData());
@@ -164,7 +164,7 @@ public class SoftKeySignatureProviderImpl implements ISignatureProvider {
                         break;
                     }
                 }
-            } catch (EosioError error) {
+            } catch (ArisenError error) {
                 throw new SignTransactionError(String.format(SoftKeySignatureErrorConstants.SIGN_TRANS_SEARCH_KEY_ERROR, inputPublicKey), error);
             }
 
@@ -191,32 +191,32 @@ public class SoftKeySignatureProviderImpl implements ISignatureProvider {
                 BigInteger[] signatureComponents = signer.generateSignature(hashedMessage);
 
                 try {
-                    String signature = EOSFormatter.convertRawRandSofSignatureToEOSFormat(signatureComponents[R_INDEX].toString(), signatureComponents[S_INDEX].toString(), message, EOSFormatter.convertEOSPublicKeyToPEMFormat(inputPublicKey));
+                    String signature = RIXFormatter.convertRawRandSofSignatureToRIXFormat(signatureComponents[R_INDEX].toString(), signatureComponents[S_INDEX].toString(), message, RIXFormatter.convertRIXPublicKeyToPEMFormat(inputPublicKey));
                     // Format Signature
                     signatures.add(signature);
                     break;
-                } catch (EOSFormatterError eosFormatterError) {
+                } catch (RIXFormatterError RIXFormatterError) {
                     // In theory, Non-canonical error only happened with K1 key
-                    if (eosFormatterError.getCause() instanceof EosFormatterSignatureIsNotCanonicalError && curve == AlgorithmEmployed.SECP256K1) {
+                    if (RIXFormatterError.getCause() instanceof RIXFormatterSignatureIsNotCanonicalError && curve == AlgorithmEmployed.SECP256K1) {
                         // Try to sign again until MAX_NOT_CANONICAL_RE_SIGN is reached or get a canonical signature
                         continue;
                     }
 
-                    throw new SignTransactionError(SoftKeySignatureErrorConstants.SIGN_TRANS_FORMAT_SIGNATURE_ERROR, eosFormatterError);
+                    throw new SignTransactionError(SoftKeySignatureErrorConstants.SIGN_TRANS_FORMAT_SIGNATURE_ERROR, RIXFormatterError);
                 }
             }
         }
 
-        return new EosioTransactionSignatureResponse(serializedTransaction, signatures, null);
+        return new ArisenTransactionSignatureResponse(serializedTransaction, signatures, null);
     }
 
     /**
      * Gets available keys from signature provider <br> Check createSignatureRequest() flow in
      * "complete workflow" for more detail of how the method is used.
      * <p>
-     * Public key of SECP256K1 has 2 types of format in EOSIO which are "EOS" and "PUB_K1_" so this method return 2 public keys in both format for SECP256K1 and 1 public key for SECP256R1.
+     * Public key of SECP256K1 has 2 types of format in Arisen which are "RIX" and "PUB_K1_" so this method return 2 public keys in both format for SECP256K1 and 1 public key for SECP256R1.
      *
-     * @return the available keys of signature provider in EOS format
+     * @return the available keys of signature provider in RIX format
      * @throws GetAvailableKeysError thrown if there are any exceptions during the get available keys process.
      */
     @Override
@@ -234,14 +234,14 @@ public class SoftKeySignatureProviderImpl implements ISignatureProvider {
                 switch (curve) {
                     case SECP256R1:
                         // USING_K1_NON_LEGACY_FORMAT is being used here because its value does not matter to SECP256R1 key
-                        availableKeys.add(processor.extractEOSPublicKeyFromPrivateKey(USING_K1_NON_LEGACY_FORMAT));
+                        availableKeys.add(processor.extractRIXPublicKeyFromPrivateKey(USING_K1_NON_LEGACY_FORMAT));
                         break;
 
                     case SECP256K1:
                         // Non legacy
-                        availableKeys.add(processor.extractEOSPublicKeyFromPrivateKey(USING_K1_NON_LEGACY_FORMAT));
+                        availableKeys.add(processor.extractRIXPublicKeyFromPrivateKey(USING_K1_NON_LEGACY_FORMAT));
                         // legacy
-                        availableKeys.add(processor.extractEOSPublicKeyFromPrivateKey(USING_K1_LEGACY_FORMAT));
+                        availableKeys.add(processor.extractRIXPublicKeyFromPrivateKey(USING_K1_LEGACY_FORMAT));
                         break;
 
                     default:

@@ -1,4 +1,4 @@
-# Contributing to EOSIO SDK for Java: Softkey Signature Provider
+# Contributing to ARISEN SDK for Java: Softkey Signature Provider
 
 Interested in contributing? That's awesome! Here are some guidelines to get started quickly and easily:
 
@@ -74,14 +74,14 @@ To get it out of the way:
 
 ### Developing With Gradle Locally
 
-By default, libraries are installed from remote Maven repositories through Gradle. If, however, you wish to develop locally and you'd like to integrate with locally-cloned versions of EOSIO SDK for Java and/or other Providers, follow these instructions:
+By default, libraries are installed from remote Maven repositories through Gradle. If, however, you wish to develop locally and you'd like to integrate with locally-cloned versions of ARISEN SDK for Java and/or other Providers, follow these instructions:
 
 1. Clone this and other repos into the same directory, as siblings of one another.
 1. Github repo of all libraries:
-   * [EOSIO SDK for Java](https://github.com/EOSIO/eosio-java): The core EOSIO SDK for Java library
-   * [RPC Provider](https://github.com/EOSIO/eosio-java-android-rpc-provider): The RPC provider implementation in the core library
-   * [ABIEOS Serialization Provider](https://github.com/EOSIO/eosio-java-android-abieos-serialization-provider): A pluggable serialization provider for EOSIO SDK for Java using ABIEOS (for transaction and action conversion between JSON and binary data representations)
-   * [Softkey Signature Provider](https://github.com/EOSIO/eosio-java-softkey-signature-provider): An example pluggable signature provider for EOSIO SDK for Java for signing transactions using in-memory keys (not for production use)
+   * [ARISEN SDK for Java](https://github.com/ARISEN/arisen-java): The core ARISEN SDK for Java library
+   * [RPC Provider](https://github.com/ARISEN/arisen-java-android-rpc-provider): The RPC provider implementation in the core library
+   * [ABIRIX Serialization Provider](https://github.com/ARISEN/arisen-java-android-abiRIX-serialization-provider): A pluggable serialization provider for ARISEN SDK for Java using ABIRIX (for transaction and action conversion between JSON and binary data representations)
+   * [Softkey Signature Provider](https://github.com/ARISEN/arisen-java-softkey-signature-provider): An example pluggable signature provider for ARISEN SDK for Java for signing transactions using in-memory keys (not for production use)
 1. Import as a gradle project into your favorite IDE or build with gradle from the command line.
 1. Develop!
 

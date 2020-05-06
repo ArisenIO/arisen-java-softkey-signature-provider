@@ -1,10 +1,10 @@
-package one.block.eosiosoftkeysignatureprovider.error;
+package one.block.arisensoftkeysignatureprovider.error;
 
-import one.block.eosiosoftkeysignatureprovider.SoftKeySignatureProviderImpl;
+import one.block.arisensoftkeysignatureprovider.SoftKeySignatureProviderImpl;
 
 /**
  * Error constants that pertain to the signing of transactions using the softkey signature provider
- * implementation {@link one.block.eosiosoftkeysignatureprovider.SoftKeySignatureProviderImpl}
+ * implementation {@link one.block.arisensoftkeysignatureprovider.SoftKeySignatureProviderImpl}
  */
 public class SoftKeySignatureErrorConstants {
     /**

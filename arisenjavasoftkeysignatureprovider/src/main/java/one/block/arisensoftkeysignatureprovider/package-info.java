@@ -1,4 +1,4 @@
 /**
  * Provides the implementation class that implements ISignatureProvider.
  */
-package one.block.eosiosoftkeysignatureprovider;
+package one.block.arisensoftkeysignatureprovider;
